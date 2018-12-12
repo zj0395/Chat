@@ -10,13 +10,14 @@
 
 namespace zj {
     class Client : public Singleton<Client> {
+        friend class Singleton<Client>;
     private:
         Client();
         ~Client();
         std::string m_serverIp;
         std::string m_serverPort;
     public:
-        bool connect(const char* ip, const char *port);
+        bool connect_to(const char* ip, const char *port);
     };
 }
 

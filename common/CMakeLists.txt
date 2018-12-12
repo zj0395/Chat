@@ -5,4 +5,4 @@ set(CMAKE_CXX_STANDARD 11)
 
 aux_source_directory(. SRCFILES)
 
-add_library(common SHARED ${SRCFILES})
+add_library(common STATIC ${SRCFILES})

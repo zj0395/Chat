@@ -17,6 +17,10 @@ using namespace std;
 
 namespace {
     int initServer(int type, const struct sockaddr *addr, socklen_t alen, int qlen) {
+        char ff[100];
+        addr->sa_data;
+//        cout << inet_ntop(AF_INET, &((struct sockaddr_in *)addr)->sin_addr, ff, 100) <<endl;
+//        cout << ntohs( ((struct sockaddr_in *)addr)->sin_port )<< endl;
         int fd = socket( addr->sa_family, type, 0 );
         if( fd < 0 ) {
             cerr << "socket fail" <<endl;
@@ -30,6 +34,7 @@ namespace {
 
         if ( listen(fd, qlen) < 0 ) {
             cerr << "listern fail" <<endl;
+            return false;
         }
         return fd;
     }
@@ -64,7 +69,7 @@ namespace zj {
         memset( &hint, 0, sizeof(hint));
         hint.ai_flags = AI_CANONNAME;
         hint.ai_socktype = SOCK_STREAM;
-        if ( (err = getaddrinfo(host, m_port.c_str(), &hint, &ailist)) < 0 ) {
+        if ( (err = getaddrinfo(host, port, &hint, &ailist)) < 0 ) {
             cerr << "getaddrinfo fail" <<endl;
             return false;
         }
@@ -85,7 +90,7 @@ namespace zj {
     void Server::waitForConnect() {
         int clfd;
         while( m_runFlag ) {
-            if ( clfd = accept(m_sockfd, NULL, NULL) < 0 ) {
+            if ( (clfd = accept(m_sockfd, NULL, NULL)) < 0 ) {
                 cerr << "Error When Accept" << endl;
                 return;
             }

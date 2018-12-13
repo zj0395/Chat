@@ -19,8 +19,8 @@ namespace {
 int initServer(int type, const struct sockaddr *addr, socklen_t alen, int qlen) {
     char ff[100];
     addr->sa_data;
-//        cout << inet_ntop(AF_INET, &((struct sockaddr_in *)addr)->sin_addr, ff, 100) <<endl;
-//        cout << ntohs( ((struct sockaddr_in *)addr)->sin_port )<< endl;
+    //cout << inet_ntop(AF_INET, &((struct sockaddr_in *) addr)->sin_addr, ff, 100) << endl;
+    //cout << ntohs(((struct sockaddr_in *) addr)->sin_port) << endl;
     int fd = socket(addr->sa_family, type, 0);
     if (fd < 0) {
         cerr << "socket fail" << endl;

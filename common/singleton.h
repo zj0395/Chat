@@ -6,23 +6,27 @@
 #define CHAT_SINGLETON_H
 
 namespace zj {
-    template <typename T>
-    class Singleton {
-    public:
-        static T& getInstance() {
-            return s_instance;
-        }
+template<typename T>
+class Singleton {
+public:
+    static T &getInstance() {
+        return s_instance;
+    }
 
-    protected:
-        Singleton() = default;
-        ~Singleton() = default;
-        Singleton(Singleton&) = delete;
-        Singleton(Singleton&&) = delete;
-        static T s_instance;
-    };
+protected:
+    Singleton() = default;
 
-    template <typename T>
-    T Singleton<T>::s_instance;
+    ~Singleton() = default;
+
+    Singleton(Singleton &) = delete;
+
+    Singleton(Singleton &&) = delete;
+
+    static T s_instance;
+};
+
+template<typename T>
+T Singleton<T>::s_instance;
 };
 
 #endif //CHAT_SINGLETON_H

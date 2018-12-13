@@ -6,8 +6,9 @@
 #include <sys/socket.h>
 
 namespace zj {
-    Listener::Listener(const char *port) {
-    }
-    Listener::~Listener() {
-    }
+Listener::Listener(const char *port) {
+}
+
+Listener::~Listener() {
+}
 }

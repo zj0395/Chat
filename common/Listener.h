@@ -6,13 +6,13 @@
 #define CHAT_LISTENER_H
 
 namespace zj {
-    class Listener {
-    public:
-        Listener(const char* port);
+class Listener {
+public:
+    Listener(const char *port);
 
-    private:
-        ~Listener();
-    };
+private:
+    ~Listener();
+};
 }
 
 

@@ -9,16 +9,19 @@
 #include <string>
 
 namespace zj {
-    class Client : public Singleton<Client> {
-        friend class Singleton<Client>;
-    private:
-        Client();
-        ~Client();
-        std::string m_serverIp;
-        std::string m_serverPort;
-    public:
-        bool connect_to(const char* ip, const char *port);
-    };
+class Client : public Singleton<Client> {
+    friend class Singleton<Client>;
+
+private:
+    Client();
+
+    ~Client();
+
+    std::string m_serverIp;
+    std::string m_serverPort;
+public:
+    bool connect_to(const char *ip, const char *port);
+};
 }
 
 #endif //CHAT_CLIENT_H

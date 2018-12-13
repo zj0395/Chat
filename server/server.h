@@ -9,22 +9,25 @@
 #include "singleton.h"
 
 namespace zj {
-    class Server : public Singleton<Server>{
+class Server : public Singleton<Server> {
     friend class Singleton<Server>;
-    public:
-        bool init(const char *port);
-        void waitForConnect();
 
-    private:
-        Server();
-        ~Server();
+public:
+    bool init(const char *port);
 
-    private:
-        std::string m_port;
-        bool m_initFlag;
-        int m_sockfd;
-        bool m_runFlag;
-    };
+    void waitForConnect();
+
+private:
+    Server();
+
+    ~Server();
+
+private:
+    std::string m_port;
+    bool m_initFlag;
+    int m_sockfd;
+    bool m_runFlag;
+};
 }
 
 #endif //CHAT_SERVER_H

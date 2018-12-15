@@ -6,3 +6,4 @@ set(CMAKE_CXX_STANDARD 11)
 aux_source_directory(. SRCFILES)
 
 add_executable(client ${SRCFILES})
+

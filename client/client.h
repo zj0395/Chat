@@ -18,9 +18,9 @@ private:
     ~Client();
 
     std::string m_serverIp;
-    std::string m_serverPort;
+    int m_serverPort;
 public:
-    bool connect_to(const char *ip, const char *port);
+    bool connect_to(const char *ip, int port);
 };
 }
 

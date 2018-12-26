@@ -5,8 +5,8 @@
 #ifndef CHAT_SERVER_H
 #define CHAT_SERVER_H
 
-#include <string>
 #include "singleton.h"
+#include <string>
 
 namespace zj {
 class Server : public Singleton<Server> {
@@ -15,7 +15,9 @@ class Server : public Singleton<Server> {
 public:
     bool init(const char *port);
 
-    void waitForConnect();
+    void stop();
+
+    void wait_for_connect();
 
 private:
     Server();
@@ -24,9 +26,9 @@ private:
 
 private:
     std::string m_port;
-    bool m_initFlag;
+    bool m_init_flag;
     int m_sockfd;
-    bool m_runFlag;
+    bool m_run_flag;
 };
 }
 

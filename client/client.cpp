@@ -3,13 +3,13 @@
 //
 
 #include "client.h"
+#include "logs.h"
 
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
 #include <cstring>
-#include <iostream>
 
 using namespace std;
 
@@ -22,27 +22,29 @@ Client::~Client() {
 
 }
 
-bool Client::connect_to(const char *ip, const char *port) {
+bool Client::connect_to(const char *ip, int port) {
+    LOG_INFO("Try to connect to {}:{}", ip, port);
     int fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd < 0) {
-        cerr << "socket fail" << endl;
+        LOG_ERROR("Fail to get socket");
         return false;
     }
 
     struct sockaddr_in server;
     memset(&server, 0, sizeof(server));
     server.sin_family = AF_INET;
-    server.sin_port = atoi(port);
+    server.sin_port = htons(port);
     if (inet_pton(AF_INET, ip, &server.sin_addr) < 0) {
-        cerr << "inet_pton fail" << endl;
+        LOG_ERROR("Fail to inet_pton");
         return false;
     }
 
     if (connect(fd, (struct sockaddr *) &server, sizeof(server)) < 0) {
-        cerr << "connect fail:" << strerror(errno) << endl;
+        LOG_ERROR("Fail to connect:{}", strerror(errno));
         return false;
     }
 
-    return false;
+    LOG_INFO("Connect success");
+    return true;
 }
 }

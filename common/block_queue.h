@@ -2,8 +2,8 @@
 // Created by zj on 12/25/18.
 //
 
-#ifndef _BLOCK_QUEUE_H
-#define _BLOCK_QUEUE_H
+#ifndef CHAT_BLOCK_QUEUE_H
+#define CHAT_BLOCK_QUEUE_H
 
 #include <thread>
 #include <mutex>

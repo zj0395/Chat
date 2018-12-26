@@ -2,6 +2,7 @@
 // Created by zj on 12/2/18.
 //
 
+#include "logs.h"
 #include "server.h"
 #include <sys/socket.h>
 #include <unistd.h>
@@ -10,30 +11,28 @@
 #include <arpa/inet.h>
 
 #include <cstring>
-#include <iostream>
 
 #define QLEN 10
 using namespace std;
 
 namespace {
-int initServer(int type, const struct sockaddr *addr, socklen_t alen, int qlen) {
+int init_server(int type, const struct sockaddr *addr, socklen_t alen, int qlen) {
     char ff[100];
-    addr->sa_data;
-    //cout << inet_ntop(AF_INET, &((struct sockaddr_in *) addr)->sin_addr, ff, 100) << endl;
-    //cout << ntohs(((struct sockaddr_in *) addr)->sin_port) << endl;
+    LOG_INFO("Server ip:{}, port:{}", inet_ntop(AF_INET, &((struct sockaddr_in *) addr)->sin_addr, ff, 100),
+            ntohs(((struct sockaddr_in *) addr)->sin_port));
     int fd = socket(addr->sa_family, type, 0);
     if (fd < 0) {
-        cerr << "socket fail" << endl;
+        LOG_ERROR("Fail to get socket");
         return false;
     }
 
     if (bind(fd, addr, alen) < 0) {
-        cerr << "bind fail" << endl;
+        LOG_ERROR("Fail to bind");
         return false;
     }
 
     if (listen(fd, qlen) < 0) {
-        cerr << "listern fail" << endl;
+        LOG_ERROR("Fail to listen");
         return false;
     }
     return fd;
@@ -43,16 +42,16 @@ int initServer(int type, const struct sockaddr *addr, socklen_t alen, int qlen) 
 namespace zj {
 Server::Server() {
     m_sockfd = 0;
-    m_initFlag = false;
-    m_runFlag = true;
+    m_init_flag = false;
+    m_run_flag = true;
 }
 
 Server::~Server() {
-    cout << "DESTROCUOR" << endl;
+    LOG_DEBUG("Server destructor");
 }
 
 bool Server::init(const char *port) {
-    if (m_initFlag) {
+    if (m_init_flag) {
         return true;
     }
 
@@ -60,7 +59,7 @@ bool Server::init(const char *port) {
     int err;
 
     if ((err = gethostname(host, 128)) < 0) {
-        cerr << "gethostname fail" << endl;
+        LOG_ERROR("Fail to gethostname");
         return false;
     }
 
@@ -70,16 +69,17 @@ bool Server::init(const char *port) {
     hint.ai_flags = AI_CANONNAME;
     hint.ai_socktype = SOCK_STREAM;
     if ((err = getaddrinfo(host, port, &hint, &ailist)) < 0) {
-        cerr << "getaddrinfo fail" << endl;
+        LOG_ERROR("Fail to getaddrinfo");
         return false;
     }
 
     int sockfd = 0;
     for (aip = ailist; aip != NULL; aip = aip->ai_next) {
-        if ((sockfd = initServer(SOCK_STREAM, aip->ai_addr, aip->ai_addrlen, QLEN)) > 0) {
+        if ((sockfd = init_server(SOCK_STREAM, aip->ai_addr, aip->ai_addrlen, QLEN)) > 0) {
             m_port = port;
             m_sockfd = sockfd;
-            m_initFlag = true;
+            m_init_flag = true;
+            LOG_INFO("Server init success");
             return true;
         }
     }
@@ -87,15 +87,21 @@ bool Server::init(const char *port) {
     return false;
 }
 
-void Server::waitForConnect() {
+void Server::wait_for_connect() {
     int clfd;
-    while (m_runFlag) {
+    while (m_run_flag) {
         if ((clfd = accept(m_sockfd, NULL, NULL)) < 0) {
-            cerr << "Error When Accept" << endl;
+            LOG_ERROR("Error when accept");
             return;
         }
-        cout << "New Connect. Id: " << clfd << endl;
+        LOG_INFO("New connect fd:{}", clfd);
         usleep(10000);
     }
+}
+
+void Server::stop() {
+    LOG_INFO("Server stop");
+    close(m_sockfd);
+    m_run_flag = false;
 }
 }

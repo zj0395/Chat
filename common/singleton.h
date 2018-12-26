@@ -9,7 +9,7 @@ namespace zj {
 template<typename T>
 class Singleton {
 public:
-    static T &getInstance() {
+    inline static T &get_instance() {
         return s_instance;
     }
 

@@ -2,3 +2,6 @@
     path = extern/spdlog
     url = https://github.com/gabime/spdlog.git
     ignore = dirty
+[submodule "extern/fmt"]
+	path = extern/fmt
+	url = https://github.com/fmtlib/fmt.git

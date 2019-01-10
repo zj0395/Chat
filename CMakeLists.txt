@@ -8,9 +8,6 @@ ENDIF()
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
-
 # common
 include_directories(extern/spdlog/include/)
 ADD_SUBDIRECTORY(common)

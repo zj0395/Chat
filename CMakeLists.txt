@@ -8,8 +8,10 @@ ENDIF()
 
 set(CMAKE_CXX_STANDARD 11)
 
-# common
+# extern
 include_directories(extern/spdlog/include/)
+
+# common
 ADD_SUBDIRECTORY(common)
 
 # client and server

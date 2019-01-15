@@ -1,23 +1,22 @@
 #!/bin/bash
 # configs
-readonly BUILDTYPE=debug # debug, release
-readonly CHATROOT=$(cd `dirname $0`;pwd)
-readonly OUTDIR=$CHATROOT/cmake-build-$BUILDTYPE
-readonly BINDIR=$OUTDIR/bin
-readonly LIBDIR=$OUTDIR/lib
-readonly INCLUDEDIR=$OUTDIR/include
+readonly g_BUILD_TYPE=debug # debug, release
+readonly g_CHAT_ROOT=$(cd `dirname $0`;pwd)
+readonly g_OUT_DIR=$g_CHAT_ROOT/cmake-build-$g_BUILD_TYPE
+readonly g_BIN_DIR=$g_OUT_DIR/bin
+readonly g_LIB_DIR=$g_OUT_DIR/lib
+readonly g_INCLUDE_DIR=$g_OUT_DIR/include
 
 # defines
-readonly COPY_H=1
+readonly COPY_H=0
 
 function local_mkdir() {
     if [[ $# -lt 1 ]];then
         echo "---Error call local_mkdir $*"
         return
     fi
-    if [[ ! -d "$DST_DIR" ]];then
-        mkdir -p "$DST_DIR"
-    fi
+    local DST_DIR=$1
+    mkdir -p "$DST_DIR"
 }
 
 function local_copy_header() {
@@ -50,40 +49,42 @@ function local_copy_library() {
 }
 
 function build_spdlog() {
-    local SRC_DIR=$CHATROOT/extern/spdlog
-    local OUT_DIR=$OUTDIR/extern/spdlog
+    local SRC_DIR=$g_CHAT_ROOT/extern/spdlog
+    local OUT_DIR=$g_OUT_DIR/extern/spdlog
     local myDefines=""
 
-    local_copy_header "$SRC_DIR" "$INCLUDEDIR"
+    local_copy_header "$SRC_DIR" "$g_INCLUDE_DIR"
 }
 
 function build_fmt() {
-    local SRC_DIR=$CHATROOT/extern/fmt
-    local OUT_DIR=$OUTDIR/extern/fmt
+    local SRC_DIR=$g_CHAT_ROOT/extern/fmt
+    local OUT_DIR=$g_OUT_DIR/extern/fmt
     local myDefines=""
-    cmake -S "$SRC_DIR" -B "$OUT_DIR" $myDefines && cd "$OUT_DIR" && make
+    local_mkdir "$OUT_DIR"
+    cd "$OUT_DIR" && cmake "$SRC_DIR" $myDefines && make fmt
 
-    local_copy_header "$SRC_DIR" "$INCLUDEDIR"
-    local_copy_library "$OUT_DIR" "$LIBDIR"
+    local_copy_header "$SRC_DIR" "$g_INCLUDE_DIR"
+    local_copy_library "$OUT_DIR" "$g_LIB_DIR"
 }
 
 function build_chat() {
-    if [[ ! -d $CHATROOT ]];then
+    if [[ ! -d $g_CHAT_ROOT ]];then
         echo Unknown Wrong.
-        exit
+        exit 1
     fi
 
-    local SRC_DIR=$CHATROOT
-    local OUT_DIR=$OUTDIR
-    local myDefines="-DCMAKE_BUILD_TYPE=$BUILDTYPE -DEXECUTABLE_OUTPUT_PATH=$BINDIR -DLIBRARY_OUTPUT_PATH=$LIBDIR"
-    cmake -S "$SRC_DIR" -B "$OUT_DIR" $myDefines && cd "$OUT_DIR" && make
+    local SRC_DIR=$g_CHAT_ROOT
+    local OUT_DIR=$g_OUT_DIR
+    local myDefines="-DCMAKE_BUILD_TYPE=$g_BUILD_TYPE -DEXECUTABLE_OUTPUT_PATH=$g_BIN_DIR -DLIBRARY_OUTPUT_PATH=$g_LIB_DIR"
+    local_mkdir $OUT_DIR
+    cd "$OUT_DIR" && cmake "$SRC_DIR" $myDefines && make
 
     success=$?
     if [ $success -eq 0 ];then
         echo Build Success
     else
         echo Build Fail
-        exit
+        exit 1
     fi
 }
 

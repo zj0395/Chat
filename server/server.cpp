@@ -91,7 +91,9 @@ void Server::wait_for_connect() {
     int clfd;
     while (m_run_flag) {
         if ((clfd = accept(m_sockfd, NULL, NULL)) < 0) {
-            LOG_ERROR("Error when accept");
+            if (m_run_flag) {
+                LOG_ERROR("Error when accept");
+            }
             return;
         }
         LOG_INFO("New connect fd:{}", clfd);
@@ -101,7 +103,7 @@ void Server::wait_for_connect() {
 
 void Server::stop() {
     LOG_INFO("Server stop");
-    close(m_sockfd);
     m_run_flag = false;
+    close(m_sockfd);
 }
 }

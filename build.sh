@@ -7,9 +7,6 @@ readonly g_BIN_DIR=$g_OUT_DIR/bin
 readonly g_LIB_DIR=$g_OUT_DIR/lib
 readonly g_INCLUDE_DIR=$g_OUT_DIR/include
 
-# defines
-readonly COPY_H=0
-
 function local_mkdir() {
     if [[ $# -lt 1 ]];then
         echo "---Error call local_mkdir $*"
@@ -27,9 +24,7 @@ function local_copy_header() {
     local SRC_DIR=$1
     local DST_DIR=$2
     local_mkdir "$DST_DIR"
-    if [[ $COPY_H -eq 1 ]];then
-        cp "$SRC_DIR"/include/* "$DST_DIR"/ -r
-    fi
+    cp "$SRC_DIR"/include/* "$DST_DIR"/ -r
 }
 
 function local_copy_library() {
@@ -75,7 +70,7 @@ function build_chat() {
 
     local SRC_DIR=$g_CHAT_ROOT
     local OUT_DIR=$g_OUT_DIR
-    local myDefines="-DCMAKE_BUILD_TYPE=$g_BUILD_TYPE -DEXECUTABLE_OUTPUT_PATH=$g_BIN_DIR -DLIBRARY_OUTPUT_PATH=$g_LIB_DIR"
+    local myDefines="-DCMAKE_BUILD_TYPE=$g_BUILD_TYPE -DEXECUTABLE_OUTPUT_PATH=$g_BIN_DIR -DLIBRARY_OUTPUT_PATH=$g_LIB_DIR -DMY_INCLUDE_PATH=$g_INCLUDE_DIR"
     local_mkdir $OUT_DIR
     cd "$OUT_DIR" && cmake "$SRC_DIR" $myDefines && make
 

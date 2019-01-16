@@ -1,6 +1,7 @@
 #include "heads.h"
 #include "server.h"
 #include "logs.h"
+#include "fmt/format.h"
 #include <signal.h>
 using namespace std;
 
@@ -13,6 +14,7 @@ void signal_handle(int signal_id) {
 
 int main() {
     signal(SIGINT, signal_handle);
+    fmt::print("Hello, {}!\n", "world");
     zj::Server &server = zj::Server::get_instance();
     server.init(SERVER_PORT);
     server.wait_for_connect();

@@ -6,6 +6,7 @@ readonly g_OUT_DIR=$g_CHAT_ROOT/cmake-build-$g_BUILD_TYPE
 readonly g_BIN_DIR=$g_OUT_DIR/bin
 readonly g_LIB_DIR=$g_OUT_DIR/lib
 readonly g_INCLUDE_DIR=$g_OUT_DIR/include
+readonly g_PROTOCOL_OUT=$g_OUT_DIR/protocol
 
 function local_mkdir() {
     if [[ $# -lt 1 ]];then
@@ -95,4 +96,17 @@ function build_all() {
     done
 }
 
+function compile_protocol {
+    local SRC_DIR=$g_CHAT_ROOT/common/protocol
+    local OUT_DIR=$g_PROTOCOL_OUT
+    local_mkdir "$OUT_DIR"
+    for file in "$SRC_DIR"/*.proto
+    do
+        if [ -e "$file"  ];then
+            protoc -I="$SRC_DIR" "$file" --cpp_out="$OUT_DIR"
+        fi
+    done
+}
+
+compile_protocol
 build_all

@@ -1,5 +1,19 @@
 dist: xenial # for a new version cmake
 language: cpp
+
+sudo: true
+
+# install protobuf library is installed
+install:
+    - wget https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protobuf-cpp-3.6.1.tar.gz
+    - tar -xzvf protobuf-cpp-3.6.1.tar.gz
+    - cd protobuf-3.6.1
+    - ./configure --prefix=/usr
+    - make
+    - make check
+    - sudo make install
+    - cd ./../
+
 compiler:
     - gcc
 os:

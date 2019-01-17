@@ -8,6 +8,9 @@ readonly g_LIB_DIR=$g_OUT_DIR/lib
 readonly g_INCLUDE_DIR=$g_OUT_DIR/include
 readonly g_PROTOCOL_OUT=$g_OUT_DIR/protocol
 
+# defines
+readonly g_COPY_HEADERS=0
+
 function local_mkdir() {
     if [[ $# -lt 1 ]];then
         echo "---Error call local_mkdir $*"
@@ -20,6 +23,9 @@ function local_mkdir() {
 function local_copy_header() {
     if [[ $# -lt 2 ]];then
         echo "---Error call copy_header $*"
+        return
+    fi
+    if [ $g_COPY_HEADERS -ne 1 ];then
         return
     fi
     local SRC_DIR=$1
@@ -71,7 +77,7 @@ function build_chat() {
 
     local SRC_DIR=$g_CHAT_ROOT
     local OUT_DIR=$g_OUT_DIR
-    local myDefines="-DCMAKE_BUILD_TYPE=$g_BUILD_TYPE -DEXECUTABLE_OUTPUT_PATH=$g_BIN_DIR -DLIBRARY_OUTPUT_PATH=$g_LIB_DIR -DMY_INCLUDE_PATH=$g_INCLUDE_DIR"
+    local myDefines="-DCMAKE_BUILD_TYPE=$g_BUILD_TYPE -DEXECUTABLE_OUTPUT_PATH=$g_BIN_DIR -DLIBRARY_OUTPUT_PATH=$g_LIB_DIR"
     local_mkdir $OUT_DIR
     cd "$OUT_DIR" && cmake "$SRC_DIR" $myDefines && make
 
@@ -102,11 +108,22 @@ function compile_protocol {
     local_mkdir "$OUT_DIR"
     for file in "$SRC_DIR"/*.proto
     do
-        if [ -e "$file"  ];then
+        if [ -e "$file"  ]; then
             protoc -I="$SRC_DIR" "$file" --cpp_out="$OUT_DIR"
         fi
+        if [ $? -ne 0 ]; then
+            echo "Fail to compile $file."
+        else
+            echo "Success to compile $file."
+        fi
     done
+    echo "compile protocol done."
 }
 
-compile_protocol
-build_all
+while getopts :pa opt
+do
+    case $opt in
+        p) compile_protocol;;
+        a) build_all;;
+    esac
+done

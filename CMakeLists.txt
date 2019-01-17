@@ -9,7 +9,8 @@ ENDIF()
 set(CMAKE_CXX_STANDARD 11)
 
 # extern
-include_directories(${MY_INCLUDE_PATH})
+include_directories(extern/spdlog/include)
+include_directories(extern/fmt/include)
 link_directories(${LIBRARY_OUTPUT_PATH})
 link_libraries(fmt)
 
@@ -18,11 +19,11 @@ ADD_SUBDIRECTORY(common)
 
 # client and server
 
+# include
+include_directories(common)
 # library
 link_libraries(common)
 link_libraries(pthread)
-# include
-include_directories(common)
 # src
 ADD_SUBDIRECTORY(client)
 ADD_SUBDIRECTORY(server)

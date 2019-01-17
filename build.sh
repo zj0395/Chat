@@ -6,7 +6,6 @@ readonly g_OUT_DIR=$g_CHAT_ROOT/cmake-build-$g_BUILD_TYPE
 readonly g_BIN_DIR=$g_OUT_DIR/bin
 readonly g_LIB_DIR=$g_OUT_DIR/lib
 readonly g_INCLUDE_DIR=$g_OUT_DIR/include
-readonly g_PROTOCOL_OUT=$g_OUT_DIR/protocol
 
 # defines
 readonly g_COPY_HEADERS=0
@@ -104,7 +103,7 @@ function build_all() {
 
 function compile_protocol {
     local SRC_DIR=$g_CHAT_ROOT/common/protocol
-    local OUT_DIR=$g_PROTOCOL_OUT
+    local OUT_DIR=$SRC_DIR/protocol
     local_mkdir "$OUT_DIR"
     for file in "$SRC_DIR"/*.proto
     do

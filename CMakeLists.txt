@@ -7,6 +7,7 @@ IF(DEBUG_mode)
 ENDIF()
 
 set(CMAKE_CXX_STANDARD 11)
+set(ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 # extern
 include_directories(extern/spdlog/include)
@@ -15,6 +16,7 @@ link_directories(${LIBRARY_OUTPUT_PATH})
 link_libraries(fmt)
 
 # common
+include_directories(common/protocol)
 ADD_SUBDIRECTORY(common)
 
 # client and server

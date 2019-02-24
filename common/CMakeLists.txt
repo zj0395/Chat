@@ -3,6 +3,7 @@ project(common)
 
 set(CMAKE_CXX_STANDARD 11)
 
+
 aux_source_directory(. SRCFILES)
 aux_source_directory(${ROOT}/common/protocol/protocol SRCFILES)
 

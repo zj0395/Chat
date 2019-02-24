@@ -2,15 +2,17 @@
 # configs
 export g_CHAT_ROOT=$(cd `dirname $0`;pwd)
 
-readonly g_BUILD_TYPE=debug # debug, release
-readonly g_BUILD_PATHFORM=ubuntu18
-readonly g_OUT_ROOT=$g_CHAT_ROOT/output/$g_BUILD_PATHFORM
-readonly g_OUT_DIR=$g_OUT_ROOT/build-$g_BUILD_TYPE
-readonly g_BIN_DIR=$g_OUT_DIR/bin
-readonly g_LIB_DIR=$g_OUT_DIR/lib
-readonly g_INCLUDE_DIR=$g_OUT_DIR/include
-readonly g_PROTOBUF_OUT=$g_OUT_ROOT/extern/protobuf
+export g_BUILD_TYPE=debug # debug, release
+export g_BUILD_PATHFORM=ubuntu18
+export g_OUT_ROOT=$g_CHAT_ROOT/output/$g_BUILD_PATHFORM
+export g_OUT_DIR=$g_OUT_ROOT/build-$g_BUILD_TYPE
+export g_BIN_DIR=$g_OUT_DIR/bin
+export g_LIB_DIR=$g_OUT_DIR/lib
+export g_INCLUDE_DIR=$g_OUT_DIR/include
+export g_PROTOBUF_OUT=$g_OUT_ROOT/extern/protobuf
+export g_GTEST_OUT=$g_OUT_ROOT/extern/gtest
 
+readonly TEST_EXE=chat_test
 # defines
 readonly g_COPY_HEADERS=0
 
@@ -87,15 +89,34 @@ function build_chat() {
 
     success=$?
     if [ $success -eq 0 ];then
-        echo Build Success
+        echo Build Chat Success
     else
         echo Build Fail
-            exit 1
+        exit 1
+    fi
+}
+
+function build_test() {
+    clean_test
+    local SRC_DIR=$g_CHAT_ROOT/test
+    local OUT_DIR=$g_OUT_DIR/test
+    local myDefines="-DEXECUTABLE_OUTPUT_PATH=$g_BIN_DIR"
+    local_mkdir $OUT_DIR
+
+    cd "$OUT_DIR" && cmake "$SRC_DIR" $myDefines && make && cd -
+    cd $g_BIN_DIR && ./"$TEST_EXE" && cd -
+
+    success=$?
+    if [ $success -eq 0 ];then
+        echo Test Success
+    else
+        echo Test Fail
+        exit 1
     fi
 }
 
 function build_all() {
-    externs="fmt,spdlog,chat"
+    externs="fmt,spdlog,chat,test"
     OLD_IFS="$IFS"
     IFS=","
     externs=($externs)
@@ -104,6 +125,15 @@ function build_all() {
     do
         build_$name
     done
+}
+
+# 编译 gtest 库
+function compile_gtest {
+    local SRC_DIR=$g_CHAT_ROOT/extern/googletest
+    local OUT_DIR=$g_GTEST_OUT
+    local myDefines=""
+    local_mkdir $OUT_DIR
+    cd "$OUT_DIR" && cmake "$SRC_DIR" $myDefines && make && cd -
 }
 
 # 编译 protobuf 二进制可执行文件
@@ -153,11 +183,31 @@ function compile_protocol {
     echo "Compile protocol done."
 }
 
-while getopts :bpa opt
+function clean_build() {
+    echo rm -rf "$g_OUT_DIR"
+    rm -rf "$g_OUT_DIR"
+}
+
+function clean_all() {
+    clean_build
+    echo rm -rf "$g_OUT_ROOT"
+    rm -rf "$g_OUT_ROOT"
+}
+
+function clean_test() {
+    echo rm -rf "$g_BIN_DIR"/"$TEST_EXE"
+}
+
+while getopts :bgptaAcC opt
 do
     case $opt in
-        b) compile_protobuf;;
-        p) compile_protocol;;
-        a) build_all;;
+        b) compile_protobuf;; # protobuf only
+        g) compile_gtest;; # gtest only
+        p) compile_protocol;; # protocol only
+        t) build_test;; # do test only
+        a) build_all;; # build.*
+        A) compile_protobuf; compile_protocol; build_all;;
+        c) clean_build;; # delete build-$g_BUILD_TYPE
+        C) clean_all;; # delete $g_OUT_ROOT
     esac
 done

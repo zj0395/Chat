@@ -1,8 +1,9 @@
 #!/bin/bash
 # configs
+export g_CHAT_ROOT=$(cd `dirname $0`;pwd)
+
 readonly g_BUILD_TYPE=debug # debug, release
 readonly g_BUILD_PATHFORM=ubuntu18
-readonly g_CHAT_ROOT=$(cd `dirname $0`;pwd)
 readonly g_OUT_ROOT=$g_CHAT_ROOT/output/$g_BUILD_PATHFORM
 readonly g_OUT_DIR=$g_OUT_ROOT/build-$g_BUILD_TYPE
 readonly g_BIN_DIR=$g_OUT_DIR/bin
@@ -77,7 +78,7 @@ function build_chat() {
         exit 1
     fi
 
-    local SRC_DIR=$g_CHAT_ROOT
+    local SRC_DIR=$g_CHAT_ROOT/src
     local OUT_DIR=$g_OUT_DIR
     local myDefines="-DCMAKE_BUILD_TYPE=$g_BUILD_TYPE -DEXECUTABLE_OUTPUT_PATH=$g_BIN_DIR -DLIBRARY_OUTPUT_PATH=$g_LIB_DIR \
         -DPROTOBUF_PATH=$g_PROTOBUF_OUT"
@@ -133,7 +134,7 @@ function compile_protobuf {
 
 # 把 .proto 协议编译成 c++ 代码
 function compile_protocol {
-    local SRC_DIR=$g_CHAT_ROOT/common/protocol
+    local SRC_DIR=$g_CHAT_ROOT/src/common/protocol
     local OUT_DIR=$SRC_DIR/protocol
     local_mkdir "$OUT_DIR"
     local protoc="$g_PROTOBUF_OUT/bin/protoc"

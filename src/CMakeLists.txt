@@ -10,9 +10,9 @@ set(CMAKE_CXX_STANDARD 11)
 set(ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
 # extern library
-include_directories(extern/spdlog/include)
+include_directories($ENV{g_CHAT_ROOT}/extern/spdlog/include)
 
-include_directories(extern/fmt/include)
+include_directories($ENV{g_CHAT_ROOT}/extern/fmt/include)
 link_directories(${LIBRARY_OUTPUT_PATH})
 link_libraries(fmt)
 

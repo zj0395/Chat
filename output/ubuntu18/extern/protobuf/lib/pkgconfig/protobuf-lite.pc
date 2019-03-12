@@ -1,4 +1,4 @@
-prefix=/home/zj/CLionProjects/Chat/output/ubuntu18/extern/protobuf
+prefix=/home/zj/zj/Chat/output/ubuntu18/extern/protobuf
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

@@ -6,5 +6,5 @@ CXX_FLAGS =   -Wall -Wshadow -Werror -Wno-error=dangling-else -DGTEST_HAS_PTHREA
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/zj/CLionProjects/Chat/extern/googletest/googlemock/include -I/home/zj/CLionProjects/Chat/extern/googletest/googlemock -isystem /home/zj/CLionProjects/Chat/extern/googletest/googletest/include -isystem /home/zj/CLionProjects/Chat/extern/googletest/googletest 
+CXX_INCLUDES = -I/home/zj/zj/Chat/extern/googletest/googlemock/include -I/home/zj/zj/Chat/extern/googletest/googlemock -isystem /home/zj/zj/Chat/extern/googletest/googletest/include -isystem /home/zj/zj/Chat/extern/googletest/googletest 
 

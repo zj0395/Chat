@@ -17,7 +17,7 @@ old_library='libprotoc.a'
 inherited_linker_flags=' -pthread'
 
 # Libraries that this one depends upon.
-dependency_libs=' /home/zj/CLionProjects/Chat/output/ubuntu18/extern/protobuf/lib/libprotobuf.la -lz'
+dependency_libs=' /home/zj/zj/Chat/output/ubuntu18/extern/protobuf/lib/libprotobuf.la -lz'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''
@@ -38,4 +38,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/home/zj/CLionProjects/Chat/output/ubuntu18/extern/protobuf/lib'
+libdir='/home/zj/zj/Chat/output/ubuntu18/extern/protobuf/lib'

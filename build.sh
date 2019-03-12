@@ -17,7 +17,7 @@ readonly TEST_EXE=chat_test
 readonly g_COPY_HEADERS=0
 
 function local_mkdir() {
-    if [[ $# -lt 1 ]];then
+    if [[ $# -ne 1 ]];then
         echo "---Error call local_mkdir $*"
         return
     fi
@@ -26,7 +26,7 @@ function local_mkdir() {
 }
 
 function local_copy_header() {
-    if [[ $# -lt 2 ]];then
+    if [[ $# -ne 2 ]];then
         echo "---Error call copy_header $*"
         return
     fi
@@ -40,7 +40,7 @@ function local_copy_header() {
 }
 
 function local_copy_library() {
-    if [[ $# -lt 2 ]];then
+    if [[ $# -ne 2 ]];then
         echo "---Error call copy_library $*"
         return
     fi
@@ -53,6 +53,20 @@ function local_copy_library() {
             cp "$file" "$DST_DIR/"
         fi
     done
+}
+
+function local_remove() {
+    if [[ $# -ne 1 ]];then
+        echo "---Error call local_remove $*"
+        return
+    fi
+    local DST_DIR="$1"
+    if [[ $DST_DIR == /\** ]];then
+        echo "Try to delete $DST_DIR"
+        exit 1
+    fi
+    echo rm -rf "$DST_DIR"
+    rm -rf "$DST_DIR"
 }
 
 function build_spdlog() {
@@ -159,7 +173,7 @@ function compile_protobuf {
     else
         echo "Success to compile protobuf"
     fi
-    rm -rf $TAR_DIR
+    local_remove "$TAR_DIR"
 }
 
 # 把 .proto 协议编译成 c++ 代码
@@ -184,21 +198,39 @@ function compile_protocol {
 }
 
 function clean_build() {
-    echo rm -rf "$g_OUT_DIR"
-    rm -rf "$g_OUT_DIR"
+    local_remove "$g_OUT_DIR"
 }
 
 function clean_all() {
     clean_build
-    echo rm -rf "$g_OUT_ROOT"
-    rm -rf "$g_OUT_ROOT"
+    local_remove "$g_OUT_ROOT"
 }
 
 function clean_test() {
-    echo rm -rf "$g_BIN_DIR"/"$TEST_EXE"
+    local_remove "$g_BIN_DIR"/"$TEST_EXE"
 }
 
-while getopts :bgptaAcC opt
+function get_help() {
+    help_str="Build script of project.
+Notice: BUILD_TYPE and BUILD_PLATFORM is defined in this script.
+        Change it as you want.
+        g_BUILD_TYPE    : debug or release
+        g_BUILD_PLATFORM: ubuntu18, or more
+Usage
+  -b        = compile .proto(protocol) file to cpp
+  -g        = compile gtest library
+  -p        = compile protocol library
+  -t        = compile and run test
+  -a        = build project file to binrary and do test
+  -A        = compile all extern library first, then same as \"-a\"
+  -c        = clean output/PLATFORM/build-TYPE directory
+  -C        = clean output/PLATFORM directory
+  -h        = print help message
+"
+    echo "$help_str"
+}
+
+while getopts :bgptaAcCh opt
 do
     case $opt in
         b) compile_protobuf;; # protobuf only
@@ -206,8 +238,14 @@ do
         p) compile_protocol;; # protocol only
         t) build_test;; # do test only
         a) build_all;; # build.*
-        A) compile_protobuf; compile_protocol; build_all;;
+        A) compile_protobuf;
+           compile_protocol;
+           compile_gtest;
+           build_all;;
         c) clean_build;; # delete build-$g_BUILD_TYPE
         C) clean_all;; # delete $g_OUT_ROOT
+        h) get_help;;
+        \?) echo "Invalid option: -$OPTARG";;
+        :) echo "Missing argument: -$OPTARG";;
     esac
 done

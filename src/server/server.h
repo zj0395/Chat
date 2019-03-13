@@ -6,6 +6,7 @@
 #define CHAT_SERVER_H
 
 #include "singleton.h"
+#include "connector.h"
 #include <string>
 
 namespace zj {
@@ -29,7 +30,8 @@ private:
     bool m_init_flag;
     int m_sockfd;
     bool m_run_flag;
+    ConnectManager m_manager;
 };
-}
+} //namespace zj
 
 #endif //CHAT_SERVER_H

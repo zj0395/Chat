@@ -88,7 +88,7 @@ bool Server::init(const char *port) {
 }
 
 void Server::wait_for_connect() {
-    int clfd;
+    int clfd = 0;
     while (m_run_flag) {
         if ((clfd = accept(m_sockfd, NULL, NULL)) < 0) {
             if (m_run_flag) {
@@ -97,6 +97,7 @@ void Server::wait_for_connect() {
             return;
         }
         LOG_INFO("New connect fd:{}", clfd);
+        m_manager.add(clfd);
         usleep(10000);
     }
 }

@@ -56,17 +56,17 @@ function local_copy_library() {
 }
 
 function local_remove() {
-    if [[ $# -ne 1 ]];then
+    if [[ $# -lt 1 ]];then
         echo "---Error call local_remove $*"
         return
     fi
-    local DST_DIR="$1"
+    local DST_DIR="$*"
     if [[ $DST_DIR == /\** ]];then
         echo "Try to delete $DST_DIR"
         exit 1
     fi
     echo rm -rf "$DST_DIR"
-    rm -rf "$DST_DIR"
+    rm -rf $DST_DIR
 }
 
 function build_spdlog() {
@@ -93,6 +93,7 @@ function build_chat() {
         echo Unknown Wrong.
         exit 1
     fi
+    local_remove $g_BIN_DIR/*
 
     local SRC_DIR=$g_CHAT_ROOT/src
     local OUT_DIR=$g_OUT_DIR

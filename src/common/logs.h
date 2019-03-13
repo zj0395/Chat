@@ -37,27 +37,35 @@
 #define LOG_CRITICAL(...) SPDLOG_LOGGER_CRITICAL(_LOGGER, __VA_ARGS__)
 
 namespace zj{
-class Logger : public Singleton<Logger> {
+class Logger : public Singleton<Logger>{
     friend class Singleton<Logger>;
     typedef std::shared_ptr<spdlog::async_logger> LogPtrType;
 public:
-    inline LogPtrType get_logger() {return _logger;}
-    static void init(const std::string& name) {
+    static void init(const std::string& name, const std::string& file_name) {
+        _name = name;
+        _file_name = file_name;
+        // make sure the instance of Logger is initialized first,
+        // so will also be destroyed last.
+        get_instance();
+    }
+
+    inline LogPtrType get_logger() { return _logger;}
+private:
+    Logger() {
         spdlog::init_thread_pool(8192, 1);
         auto stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt >();
         stdout_sink->set_level(spdlog::level::debug);
         stdout_sink->set_pattern("[%Y-%m-%d %H.%M.%S.%e] [%n] [%^%l%$] [%@] [thread %t] %v");
-        auto rotating_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>("chat.log", 1024*1024*10, 3);
+        auto rotating_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(_file_name, 1024*1024*10, 3);
         rotating_sink->set_level(spdlog::level::trace);
         rotating_sink->set_pattern("[%Y-%m-%d %H.%M.%S.%e] [%n] [%^%l%$] [%@] [thread %t] %v");
         std::vector<spdlog::sink_ptr> sinks {stdout_sink, rotating_sink};
-        get_instance()._logger = std::make_shared<spdlog::async_logger>(name, sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
+        _logger = std::make_shared<spdlog::async_logger>(_name, sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
         // spdlog::register_logger(_logger);
     }
-
-private:
-    Logger() = default;
     LogPtrType _logger;
+    static std::string _name;
+    static std::string _file_name;
     //std::atomic<bool> _init_flag;
 };
 }

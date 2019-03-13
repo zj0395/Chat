@@ -1,5 +1,7 @@
 //
 // Created by zj on 12/2/18.
+// Singleton template.
+// use get_instance() function to control the order of instance initialize.
 //
 
 #ifndef CHAT_SINGLETON_H
@@ -10,7 +12,8 @@ template<typename T>
 class Singleton {
 public:
     inline static T &get_instance() {
-        return s_instance;
+        static T instance;
+        return instance;
     }
 
 protected:
@@ -21,12 +24,8 @@ protected:
     Singleton(Singleton &) = delete;
 
     Singleton(Singleton &&) = delete;
-
-    static T s_instance;
 };
+} //namespace zj
 
-template<typename T>
-T Singleton<T>::s_instance;
-};
 
 #endif //CHAT_SINGLETON_H

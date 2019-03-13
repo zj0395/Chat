@@ -15,13 +15,6 @@
 using namespace std;
 
 namespace zj {
-Client::Client() {
-
-}
-
-Client::~Client() {
-
-}
 
 bool Client::connect_to(const char *ip, int port) {
     LOG_INFO("Try to connect to {}:{}", ip, port);

@@ -14,9 +14,7 @@ class Client : public Singleton<Client> {
     friend class Singleton<Client>;
 
 private:
-    Client();
-
-    ~Client();
+    Client() = default;
 
     std::string m_serverIp;
     int m_serverPort;

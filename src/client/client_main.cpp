@@ -16,6 +16,7 @@ void signal_handle(int signal_id) {
 }
 
 int main() {
+    zj::Logger::init("client");
     zj::Client &client = zj::Client::get_instance();
     client.connect_to(SERVER_NAME, SERVER_PORT);
 

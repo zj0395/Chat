@@ -13,6 +13,7 @@ void signal_handle(int signal_id) {
 }
 
 int main() {
+    zj::Logger::init("server");
     signal(SIGINT, signal_handle);
     fmt::print("Hello, {}!\n", "world");
     zj::Server &server = zj::Server::get_instance();

@@ -4,6 +4,7 @@
 
 #include "logs.h"
 #include "server.h"
+#include "heads.h"
 #include <sys/socket.h>
 #include <unistd.h>
 #include <netdb.h>
@@ -21,6 +22,7 @@ int init_server(int type, const struct sockaddr *addr, socklen_t alen, int qlen)
     LOG_INFO("Server ip:{}, port:{}", inet_ntop(AF_INET, &((struct sockaddr_in *) addr)->sin_addr, ff, 100),
             ntohs(((struct sockaddr_in *) addr)->sin_port));
     int fd = socket(addr->sa_family, type, 0);
+    LOG_INFO("Server fd:{}", fd);
     if (fd < 0) {
         LOG_ERROR("Fail to get socket");
         return false;
@@ -97,7 +99,8 @@ void Server::wait_for_connect() {
             return;
         }
         LOG_INFO("New connect fd:{}", clfd);
-        m_manager.add(clfd);
+        m_manager.add(clfd, TYPE_CLIENT);
+        m_manager.read_begin();
         usleep(10000);
     }
 }
@@ -105,6 +108,7 @@ void Server::wait_for_connect() {
 void Server::stop() {
     LOG_INFO("Server stop");
     m_run_flag = false;
+    m_manager.read_stop();
     close(m_sockfd);
 }
 }

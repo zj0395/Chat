@@ -24,7 +24,8 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/rotating_file_sink.h"
 #include <memory>
-#include <atomic>
+#include <string>
+//#include <atomic>
 
 #define _LOGGER zj::Logger::get_instance().get_logger()
 
@@ -41,21 +42,23 @@ class Logger : public Singleton<Logger> {
     typedef std::shared_ptr<spdlog::async_logger> LogPtrType;
 public:
     inline LogPtrType get_logger() {return _logger;}
-private:
-    Logger() {
+    static void init(const std::string& name) {
         spdlog::init_thread_pool(8192, 1);
         auto stdout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt >();
-        stdout_sink->set_level(spdlog::level::info);
+        stdout_sink->set_level(spdlog::level::debug);
         stdout_sink->set_pattern("[%Y-%m-%d %H.%M.%S.%e] [%n] [%^%l%$] [%@] [thread %t] %v");
         auto rotating_sink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>("chat.log", 1024*1024*10, 3);
         rotating_sink->set_level(spdlog::level::trace);
         rotating_sink->set_pattern("[%Y-%m-%d %H.%M.%S.%e] [%n] [%^%l%$] [%@] [thread %t] %v");
         std::vector<spdlog::sink_ptr> sinks {stdout_sink, rotating_sink};
-        _logger = std::make_shared<spdlog::async_logger>("global", sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
+        get_instance()._logger = std::make_shared<spdlog::async_logger>(name, sinks.begin(), sinks.end(), spdlog::thread_pool(), spdlog::async_overflow_policy::block);
         // spdlog::register_logger(_logger);
     }
+
+private:
+    Logger() = default;
     LogPtrType _logger;
-    std::atomic<bool> _init_flag;
+    //std::atomic<bool> _init_flag;
 };
 }
 

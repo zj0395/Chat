@@ -4,6 +4,7 @@
 
 #include "client.h"
 #include "logs.h"
+#include "heads.h"
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -45,6 +46,8 @@ bool Client::connect_to(const char *ip, int port) {
     }
 
     LOG_INFO("Connect success");
+    m_manager.add(fd, TYPE_SERVER);
+    m_manager.find(fd)->fd_send();
     return true;
 }
 }

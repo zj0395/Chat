@@ -6,6 +6,7 @@
 #define CHAT_CLIENT_H
 
 #include "singleton.h"
+#include "connector.h"
 #include <string>
 
 namespace zj {
@@ -19,6 +20,7 @@ private:
 
     std::string m_serverIp;
     int m_serverPort;
+    ConnectManager m_manager;
 public:
     bool connect_to(const char *ip, int port);
 };

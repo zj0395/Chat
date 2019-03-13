@@ -19,7 +19,7 @@ using namespace std;
 namespace {
 int init_server(int type, const struct sockaddr *addr, socklen_t alen, int qlen) {
     char ff[100];
-    LOG_INFO("Server ip:{}, port:{}", inet_ntop(AF_INET, &((struct sockaddr_in *) addr)->sin_addr, ff, 100),
+    LOG_DEBUG("Server ip:{}, port:{}", inet_ntop(AF_INET, &((struct sockaddr_in *) addr)->sin_addr, ff, 100),
             ntohs(((struct sockaddr_in *) addr)->sin_port));
     int fd = socket(addr->sa_family, type, 0);
     LOG_INFO("Server fd:{}", fd);
@@ -49,7 +49,7 @@ Server::Server() {
 }
 
 Server::~Server() {
-    LOG_DEBUG("Server destructor");
+    LOG_INFO("Server destructor");
 }
 
 bool Server::init(const char *port) {
@@ -86,6 +86,7 @@ bool Server::init(const char *port) {
         }
     }
 
+    LOG_ERROR("Server init fail");
     return false;
 }
 

@@ -20,16 +20,16 @@ void Connector::fd_read() {
     bool ret = person.ParseFromArray(buf, count);
     LOG_INFO("{}, {}, {}", count ,ret, person.ByteSize());
     if (!ret) {
-        LOG_ERROR("Parse From fd Fail", m_fd);
+        LOG_WARN("Parse From fd Fail", m_fd);
         //return;
     }
-    LOG_INFO(person.name());
-    LOG_INFO(person.id());
-    LOG_INFO(person.email());
+    LOG_DEBUG(person.name());
+    LOG_DEBUG(person.id());
+    LOG_DEBUG(person.email());
     for (int i=0; i<person.phones_size(); ++i) {
-        LOG_INFO("{},Type:{},Number:{}", i+1, person.phones(i).type(), person.phones(i).number());
+        LOG_DEBUG("{},Type:{},Number:{}", i+1, person.phones(i).type(), person.phones(i).number());
     }
-    LOG_INFO("Read Done From fd:{}", m_fd);
+    LOG_DEBUG("Read Done From fd:{}", m_fd);
 }
 
 void Connector::fd_send() {
@@ -79,13 +79,13 @@ int ConnectManager::add(int fd, const std::string &desc) {
     event.data.fd = fd;
     event.events = EPOLLIN | EPOLLET;
     if ( epoll_ctl(m_epoll_fd, EPOLL_CTL_ADD, fd, &event) != 0 ) {
-        LOG_ERROR("epoll_ctl error.errno:{}, fd:{}, m_epoll_fd:{}", errno, fd, m_epoll_fd);
+        LOG_ERROR("epoll_ctl error.errno:{}, fd:{}, m_epoll_fd:{}, reason:{}", errno, fd, m_epoll_fd, strerror(errno));
     }
     return 0;
 }
 
 void ConnectManager::read_begin() {
-    LOG_INFO("BEGIN READ");
+    LOG_INFO("read_begin");
     while (m_run_flag) {
         int n = epoll_wait(m_epoll_fd, m_events, EPOLL_MAX_FD, -1);
         LOG_DEBUG("Message number:{}", n);

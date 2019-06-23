@@ -25,13 +25,12 @@ include_directories(${CHAT_ROOT}/src/common/protocol/protocol)
 
 
 ## common
+include_directories(common)
 include_directories(common/protocol)
 ADD_SUBDIRECTORY(common)
 
 
 ## client and server
-# include
-include_directories(common)
 # library
 link_libraries(common)
 link_libraries(pthread)

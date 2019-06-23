@@ -18,8 +18,10 @@ private:
 
     std::string m_serverIp;
     int m_serverPort;
-    ConnectManager m_manager;
+    ConnectManager m_manager; // often one fd, but allow many
+
 public:
+    SPConnector get_first() { return m_manager.get_first(); }
     bool connect_to(const char *ip, int port);
 };
 }

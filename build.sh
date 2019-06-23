@@ -205,7 +205,6 @@ function clean_build() {
 }
 
 function clean_all() {
-    clean_build
     local_remove "$g_OUT_ROOT"
 }
 

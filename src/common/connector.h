@@ -17,8 +17,8 @@ class Connector {
 public:
     Connector(int fd, const std::string& desc) : m_fd(fd), m_desc(desc) {}
     ~Connector();
+    int get_fd() { return m_fd; }
     void fd_read();
-    void fd_send();
     const std::string get_desc() { return m_desc; }
 private:
     int m_fd;
@@ -34,6 +34,7 @@ public:
     int add(int fd, const std::string& desc);
     void read_function();
     void read_stop();
+    SPConnector get_first();
     SPConnector find(int fd);
     SPConnector find(const std::string& desc);
 

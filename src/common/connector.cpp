@@ -34,27 +34,6 @@ void Connector::fd_read() {
     LOG_DEBUG("Read Done From fd:{}", m_fd);
 }
 
-void Connector::fd_send() {
-    chat::Person person_test;
-    person_test.set_name("张建");
-    person_test.set_id(4);
-    person_test.set_email("1043326391@qq.com");
-    {
-        chat::Person_PhoneNumber* n1= person_test.add_phones();
-        n1->set_number("18811307371");
-        n1->set_type(chat::Person_PhoneType(0));
-        chat::Person_PhoneNumber* n2= person_test.add_phones();
-        n2->set_number("0395-444444");
-        n2->set_type(chat::Person_PhoneType(1));
-    }
-    int size = person_test.ByteSize();
-    char data[521];
-    bool ret = person_test.SerializeToArray(data, size);
-    LOG_INFO("Serialize to fd {}, {}, {}", m_fd, ret, size);
-    LOG_INFO("Ready to send");
-    write(m_fd, data, 521);
-}
-
 Connector::~Connector() {
     LOG_INFO("Close Connect, fd:{}", m_fd);
     close(m_fd);
@@ -176,5 +155,13 @@ void ConnectManager::read_stop() {
         m_epoll_thread.join();
         LOG_INFO("END Join");
     }
+}
+
+SPConnector ConnectManager::get_first() {
+    auto iter = m_manager.begin();
+    if (iter == m_manager.end()) {
+        return nullptr;
+    }
+    return (iter->second);
 }
 } //namespace zj

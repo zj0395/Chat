@@ -8,11 +8,14 @@
     - Server: 服务端代码  
 - test: 测试代码  
 - extern:  
-    - fmt  
-    - protobuf  
-    - spdlog  
-    - gtest
+    - fmt  c++字符串格式化库
+    - protobuf  协议编译库
+    - spdlog  日志库
+    - gtest  测试库
 ## Install
 git clone https://github.com/zj0395/Chat.git  
 git submodule init  
 git submodule update  
+## 构建
+- 初次构建`./build.sh -A`
+- `./build.sh -h` 查看构建帮助

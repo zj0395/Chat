@@ -49,12 +49,12 @@ ConnectManager::ConnectManager() {
         m_events = new epoll_event[EPOLL_MAX_FD];
         m_run_flag = true;
     }
-    initWakerPipe();
+    init_wakeup_pipe();
     std::thread tmp(&ConnectManager::read_function, this);
     m_epoll_thread.swap(tmp);
 }
 
-void ConnectManager::initWakerPipe()
+void ConnectManager::init_wakeup_pipe()
 {
     pipe(m_pipefds);
     int read_pipe = m_pipefds[0];
@@ -72,7 +72,7 @@ void ConnectManager::initWakerPipe()
     epoll_ctl(m_epoll_fd, EPOLL_CTL_ADD, read_pipe, &event);
 }
 
-void ConnectManager::wakeupEpoll() {
+void ConnectManager::wakeup_epoll() {
     char ch = 'x';
     write(m_pipefds[1], &ch, 1);
 }
@@ -151,7 +151,7 @@ void ConnectManager::read_stop() {
     close(m_epoll_fd);
     if (m_epoll_thread.joinable()) {
         LOG_INFO("BEGIN Join");
-        wakeupEpoll();
+        wakeup_epoll();
         m_epoll_thread.join();
         LOG_INFO("END Join");
     }

@@ -47,8 +47,9 @@ private:
     int m_pipefds[2]; // a pipe to wakeup epoll_wait
     std::thread m_epoll_thread;
 
-    void initWakerPipe();
-    void wakeupEpoll();
+private:
+    void init_wakeup_pipe();
+    void wakeup_epoll(); // wakeup epoll_wait
 };
 
 } //namespace zj

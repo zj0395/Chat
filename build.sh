@@ -220,9 +220,9 @@ Notice: BUILD_TYPE and BUILD_PLATFORM is defined in this script.
         g_BUILD_TYPE    : debug or release
         g_BUILD_PLATFORM: ubuntu18, or more
 Usage
-  -b        = compile .proto(protocol) file to cpp
+  -b        = compile protocol library
   -g        = compile gtest library
-  -p        = compile protocol library
+  -p        = compile .proto(protocol) file to cpp
   -t        = compile and run test
   -a        = build project file to binrary and do test
   -A        = compile all extern library first, then same as \"-a\"

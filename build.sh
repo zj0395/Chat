@@ -1,20 +1,21 @@
 #!/bin/bash
 # configs
-export g_CHAT_ROOT=$(cd `dirname $0`;pwd)
-
-export g_BUILD_TYPE=debug # debug, release
-export g_BUILD_PATHFORM=ubuntu18
-export g_OUT_ROOT=$g_CHAT_ROOT/output/$g_BUILD_PATHFORM
-export g_OUT_DIR=$g_OUT_ROOT/build-$g_BUILD_TYPE
-export g_BIN_DIR=$g_OUT_DIR/bin
-export g_LIB_DIR=$g_OUT_DIR/lib
-export g_INCLUDE_DIR=$g_OUT_DIR/include
-export g_PROTOBUF_OUT=$g_OUT_ROOT/extern/protobuf
-export g_GTEST_OUT=$g_OUT_ROOT/extern/gtest
-
-readonly TEST_EXE=chat_test
-# defines
+readonly g_BUILD_TYPE=debug # debug, release
+readonly g_BUILD_PATHFORM=ubuntu18
 readonly g_COPY_HEADERS=0
+
+# directorys
+readonly g_CHAT_ROOT=$(cd `dirname $0`;pwd)
+readonly g_OUT_ROOT=$g_CHAT_ROOT/output/$g_BUILD_PATHFORM
+readonly g_OUT_DIR=$g_OUT_ROOT/build-$g_BUILD_TYPE
+readonly g_BIN_DIR=$g_OUT_DIR/bin
+readonly g_LIB_DIR=$g_OUT_DIR/lib
+readonly g_INCLUDE_DIR=$g_OUT_DIR/include
+readonly g_PROTOBUF_OUT=$g_OUT_ROOT/extern/protobuf
+readonly g_GTEST_OUT=$g_OUT_ROOT/extern/gtest
+
+# test exe's name
+readonly TEST_EXE=chat_test
 
 function local_mkdir() {
     if [[ $# -ne 1 ]];then
@@ -98,7 +99,7 @@ function build_chat() {
     local SRC_DIR=$g_CHAT_ROOT/src
     local OUT_DIR=$g_OUT_DIR
     local myDefines="-DCMAKE_BUILD_TYPE=$g_BUILD_TYPE -DEXECUTABLE_OUTPUT_PATH=$g_BIN_DIR -DLIBRARY_OUTPUT_PATH=$g_LIB_DIR \
-        -DPROTOBUF_PATH=$g_PROTOBUF_OUT"
+        -DPROTOBUF_PATH=$g_PROTOBUF_OUT -DCHAT_ROOT=$g_CHAT_ROOT"
     local_mkdir $OUT_DIR
     cd "$OUT_DIR" && cmake "$SRC_DIR" $myDefines && make && cd -
 
@@ -115,7 +116,8 @@ function build_test() {
     clean_test
     local SRC_DIR=$g_CHAT_ROOT/test
     local OUT_DIR=$g_OUT_DIR/test
-    local myDefines="-DEXECUTABLE_OUTPUT_PATH=$g_BIN_DIR"
+    local myDefines="-DEXECUTABLE_OUTPUT_PATH=$g_BIN_DIR -DPROTOBUF_PATH=$g_PROTOBUF_OUT -DCHAT_ROOT=$g_CHAT_ROOT \
+        -DLIB_DIR=$g_LIB_DIR -DGTEST_DIR=$g_GTEST_OUT"
     local_mkdir $OUT_DIR
 
     cd "$OUT_DIR" && cmake "$SRC_DIR" $myDefines && make && cd -

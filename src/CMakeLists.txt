@@ -12,16 +12,16 @@ set(CMAKE_CXX_STANDARD 11)
 ## extern library
 link_directories(${LIBRARY_OUTPUT_PATH})
 # spdlog
-include_directories($ENV{g_CHAT_ROOT}/extern/spdlog/include)
+include_directories(${CHAT_ROOT}/extern/spdlog/include)
 # fmt
-include_directories($ENV{g_CHAT_ROOT}/extern/fmt/include)
+include_directories(${CHAT_ROOT}/extern/fmt/include)
 link_libraries(fmt)
 # protobuf
 include_directories(${PROTOBUF_PATH}/include)
 link_directories(${PROTOBUF_PATH}/lib)
 link_libraries(protobuf)
 # protocol
-include_directories($ENV{g_CHAT_ROOT}/src/common/protocol/protocol)
+include_directories(${CHAT_ROOT}/src/common/protocol/protocol)
 
 
 ## common

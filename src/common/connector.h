@@ -9,6 +9,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <thread>
 
 namespace zj {
 
@@ -31,8 +32,8 @@ public:
     ConnectManager();
     ~ConnectManager();
     int add(int fd, const std::string& desc);
-    void read_begin();
-    void read_stop() { m_run_flag = false; }
+    void read_function();
+    void read_stop();
     SPConnector find(int fd);
     SPConnector find(const std::string& desc);
 
@@ -42,6 +43,11 @@ private:
     bool m_run_flag;
     const int EPOLL_MAX_FD = 500;
     struct epoll_event* m_events;
+    int m_pipefds[2]; // a pipe to wakeup epoll_wait
+    std::thread m_epoll_thread;
+
+    void initWakerPipe();
+    void wakeupEpoll();
 };
 
 } //namespace zj

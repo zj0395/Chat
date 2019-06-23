@@ -6,6 +6,8 @@
 #include "logs.h"
 #include "test.pb.h"
 
+#include <unistd.h>
+
 namespace zj {
 
 void Connector::fd_read() {
@@ -49,6 +51,7 @@ void Connector::fd_send() {
     char data[521];
     bool ret = person_test.SerializeToArray(data, size);
     LOG_INFO("Serialize to fd {}, {}, {}", m_fd, ret, size);
+    LOG_INFO("Ready to send");
     write(m_fd, data, 521);
 }
 
@@ -67,15 +70,41 @@ ConnectManager::ConnectManager() {
         m_events = new epoll_event[EPOLL_MAX_FD];
         m_run_flag = true;
     }
+    initWakerPipe();
+    std::thread tmp(&ConnectManager::read_function, this);
+    m_epoll_thread.swap(tmp);
+}
+
+void ConnectManager::initWakerPipe()
+{
+    pipe(m_pipefds);
+    int read_pipe = m_pipefds[0];
+    int write_pipe = m_pipefds[1];
+    LOG_INFO("Init wakeup pipes. {}-{}", read_pipe, write_pipe);
+
+    // make read-end non-blocking
+    int flags = fcntl(read_pipe, F_GETFL, 0);
+    fcntl(read_pipe, F_SETFL, flags|O_NONBLOCK);
+
+    // add the read end to the epoll
+    epoll_event event = {};
+    event.data.fd = read_pipe;
+    event.events = EPOLLIN;
+    epoll_ctl(m_epoll_fd, EPOLL_CTL_ADD, read_pipe, &event);
+}
+
+void ConnectManager::wakeupEpoll() {
+    char ch = 'x';
+    write(m_pipefds[1], &ch, 1);
 }
 
 ConnectManager::~ConnectManager() {
-    close(m_epoll_fd);
+    read_stop();
 }
 
 int ConnectManager::add(int fd, const std::string &desc) {
     m_manager.insert(std::make_pair(fd, std::make_shared<Connector>(fd, desc)));
-    struct epoll_event event;
+    struct epoll_event event = {};
     event.data.fd = fd;
     event.events = EPOLLIN | EPOLLET;
     if ( epoll_ctl(m_epoll_fd, EPOLL_CTL_ADD, fd, &event) != 0 ) {
@@ -84,13 +113,26 @@ int ConnectManager::add(int fd, const std::string &desc) {
     return 0;
 }
 
-void ConnectManager::read_begin() {
-    LOG_INFO("read_begin");
+void ConnectManager::read_function() {
+    LOG_INFO("Begin read_function");
     while (m_run_flag) {
+        LOG_INFO("read_function one loop begin");
         int n = epoll_wait(m_epoll_fd, m_events, EPOLL_MAX_FD, -1);
-        LOG_DEBUG("Message number:{}", n);
+        LOG_INFO("Message number:{}", n);
         for (int i=0; i<n; ++i) {
             int fd = m_events[i].data.fd;
+
+            // wakeup by read_stop
+            if (fd == m_pipefds[0]) {
+                LOG_INFO("Wakeup by pipe, {}", fd);
+                char ch;
+                int result = 1;
+                while (result > 0) {
+                    result = read(fd, &ch, 1);
+                }
+                continue;
+            }
+
             if ((m_events[i].events & EPOLLERR) ||
                 (m_events[i].events & EPOLLHUP) ||
                 (!(m_events[i].events & EPOLLIN))) {
@@ -103,7 +145,9 @@ void ConnectManager::read_begin() {
                 find(fd)->fd_read();
             }
         }
+        LOG_INFO("read_function loop end");
     }
+    LOG_INFO("End read_function");
 }
 
 SPConnector ConnectManager::find(int fd) {
@@ -121,5 +165,16 @@ SPConnector ConnectManager::find(const std::string &desc) {
         }
     }
     return nullptr;
+}
+
+void ConnectManager::read_stop() {
+    m_run_flag = false;
+    close(m_epoll_fd);
+    if (m_epoll_thread.joinable()) {
+        LOG_INFO("BEGIN Join");
+        wakeupEpoll();
+        m_epoll_thread.join();
+        LOG_INFO("END Join");
+    }
 }
 } //namespace zj

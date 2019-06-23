@@ -101,7 +101,6 @@ void Server::wait_for_connect() {
         }
         LOG_INFO("New connect fd:{}", clfd);
         m_manager.add(clfd, TYPE_TO_CLIENT);
-        m_manager.read_begin();
         usleep(10000);
     }
 }

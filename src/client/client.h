@@ -6,7 +6,7 @@
 #define CHAT_CLIENT_H
 
 #include "singleton.h"
-#include "connector.h"
+#include "connect_manager.h"
 #include <string>
 
 namespace zj {
@@ -14,11 +14,12 @@ class Client : public Singleton<Client> {
     friend class Singleton<Client>;
 
 private:
-    Client() = default;
+    Client() : m_pool(4), m_manager(m_pool) {}
 
     std::string m_serverIp;
     int m_serverPort;
-    ConnectManager m_manager; // often one fd, but allow many
+    ThreadPool m_pool;
+    ConnectManager m_manager; // often only have one fd, but allow many
 
 public:
     SPConnector get_first() { return m_manager.get_first(); }

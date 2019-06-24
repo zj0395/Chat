@@ -42,7 +42,7 @@ int init_server(int type, const struct sockaddr *addr, socklen_t alen, int qlen)
 }
 
 namespace zj {
-Server::Server() {
+Server::Server() : m_pool(8), m_manager(m_pool) {
     m_sockfd = 0;
     m_init_flag = false;
     m_run_flag = true;

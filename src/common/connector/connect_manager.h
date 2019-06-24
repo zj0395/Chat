@@ -1,10 +1,13 @@
 //
-// Created by zj on 3/13/19.
+// Created by zj on 6/24/19.
 //
 
-#ifndef CHAT_CONNECTOR_H
-#define CHAT_CONNECTOR_H
+#ifndef CHAT_CONNECT_MANAGER_H
+#define CHAT_CONNECT_MANAGER_H
 
+
+#include "connector.h"
+#include "ThreadPool/ThreadPool.h"
 #include <sys/epoll.h>
 #include <string>
 #include <map>
@@ -14,25 +17,9 @@
 
 namespace zj {
 
-class ConnectManager;
-class Connector {
-public:
-    Connector(int fd, const std::string& desc, ConnectManager& manager) : m_fd(fd), m_desc(desc), m_manager(manager) {}
-    ~Connector();
-    int get_fd() { return m_fd; }
-    void fd_read();
-    const std::string get_desc() { return m_desc; }
-private:
-    int m_fd;
-    std::string m_desc; // description
-    ConnectManager& m_manager;
-};
-
-typedef std::shared_ptr<Connector> SPConnector;
-
 class ConnectManager{
 public:
-    ConnectManager();
+    ConnectManager(ThreadPool& pool);
     ~ConnectManager();
     int add(int fd, const std::string& desc);
     void remove(int fd);
@@ -51,12 +38,15 @@ private:
     struct epoll_event* m_events;
     int m_pipefds[2]; // a pipe to wakeup epoll_wait
     std::thread m_epoll_thread;
+    ThreadPool& m_pool;
 
 private:
     void init_wakeup_pipe();
     void wakeup_epoll(); // wakeup epoll_wait
+    void read_from(int fd);
 };
 
 } //namespace zj
 
-#endif //CHAT_CONNECTOR_H
+
+#endif //CHAT_CONNECT_MANAGER_H

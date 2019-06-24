@@ -23,11 +23,12 @@ link_libraries(protobuf)
 # protocol
 include_directories(${CHAT_ROOT}/src/common/protocol/protocol)
 # threadpool
-include_directories(${CHAT_ROOT}/extern/ThreadPool)
+include_directories(${CHAT_ROOT}/extern/)
 
 
 ## common
 include_directories(common)
+include_directories(common/connector)
 include_directories(common/protocol)
 ADD_SUBDIRECTORY(common)
 

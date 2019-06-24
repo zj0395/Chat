@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 aux_source_directory(. SRCFILES)
 aux_source_directory(${CHAT_ROOT}/src/common/message SRCFILES)
+aux_source_directory(${CHAT_ROOT}/src/common/connector SRCFILES)
 aux_source_directory(${CHAT_ROOT}/src/common/protocol/protocol SRCFILES)
 
 add_library(common STATIC ${SRCFILES})

@@ -15,8 +15,9 @@ void Connector::fd_read() {
     chat::Person person;
     char buf[1024];
     int count = read (m_fd, buf, sizeof(buf));
-    if (count <= 0) {
+    if (0 == count) {
         LOG_INFO("fd {} receive empty message", m_fd);
+        m_manager.remove(m_fd);
         return;
     }
     bool ret = person.ParseFromArray(buf, count);
@@ -81,15 +82,27 @@ ConnectManager::~ConnectManager() {
     read_stop();
 }
 
+// only called by main thread
 int ConnectManager::add(int fd, const std::string &desc) {
-    m_manager.insert(std::make_pair(fd, std::make_shared<Connector>(fd, desc)));
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        m_all_connector.insert(std::make_pair(fd, std::make_shared<Connector>(fd, desc, *this)));
+    }
     struct epoll_event event = {};
     event.data.fd = fd;
     event.events = EPOLLIN | EPOLLET;
     if ( epoll_ctl(m_epoll_fd, EPOLL_CTL_ADD, fd, &event) != 0 ) {
-        LOG_ERROR("epoll_ctl error.errno:{}, fd:{}, m_epoll_fd:{}, reason:{}", errno, fd, m_epoll_fd, strerror(errno));
+        LOG_ERROR("EPOLL_CTL_ADD error.errno:{}, fd:{}, m_epoll_fd:{}, reason:{}", errno, fd, m_epoll_fd, strerror(errno));
+    } else {
+        LOG_INFO("EPOLL_CTL_ADD success, fd:{}, m_epoll_fd:{}", fd, m_epoll_fd);
     }
     return 0;
+}
+
+// can be called from other thread
+void ConnectManager::remove(int fd) {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    m_all_connector.erase(fd);
 }
 
 void ConnectManager::read_function() {
@@ -118,7 +131,7 @@ void ConnectManager::read_function() {
                 /* An error has occured on this fd, or the socket is not
                    ready for reading (why were we notified then?) */
                 LOG_ERROR("epoll error");
-                m_manager.erase(fd);
+                remove(fd);
                 continue;
             } else {
                 find(fd)->fd_read();
@@ -130,15 +143,15 @@ void ConnectManager::read_function() {
 }
 
 SPConnector ConnectManager::find(int fd) {
-    auto iter = m_manager.find(fd);
-    if (iter == m_manager.end())
+    auto iter = m_all_connector.find(fd);
+    if (iter == m_all_connector.end())
         return nullptr;
     return (iter->second);
 }
 
 SPConnector ConnectManager::find(const std::string &desc) {
-    auto iter = m_manager.begin();
-    while (iter != m_manager.end()) {
+    auto iter = m_all_connector.begin();
+    while (iter != m_all_connector.end()) {
         if (iter->second->get_desc() == desc) {
             return (iter->second);
         }
@@ -158,8 +171,8 @@ void ConnectManager::read_stop() {
 }
 
 SPConnector ConnectManager::get_first() {
-    auto iter = m_manager.begin();
-    if (iter == m_manager.end()) {
+    auto iter = m_all_connector.begin();
+    if (iter == m_all_connector.end()) {
         return nullptr;
     }
     return (iter->second);

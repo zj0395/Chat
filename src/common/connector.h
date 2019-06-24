@@ -10,12 +10,14 @@
 #include <map>
 #include <memory>
 #include <thread>
+#include <mutex>
 
 namespace zj {
 
+class ConnectManager;
 class Connector {
 public:
-    Connector(int fd, const std::string& desc) : m_fd(fd), m_desc(desc) {}
+    Connector(int fd, const std::string& desc, ConnectManager& manager) : m_fd(fd), m_desc(desc), m_manager(manager) {}
     ~Connector();
     int get_fd() { return m_fd; }
     void fd_read();
@@ -23,6 +25,7 @@ public:
 private:
     int m_fd;
     std::string m_desc; // description
+    ConnectManager& m_manager;
 };
 
 typedef std::shared_ptr<Connector> SPConnector;
@@ -32,6 +35,7 @@ public:
     ConnectManager();
     ~ConnectManager();
     int add(int fd, const std::string& desc);
+    void remove(int fd);
     void read_function();
     void read_stop();
     SPConnector get_first();
@@ -39,7 +43,8 @@ public:
     SPConnector find(const std::string& desc);
 
 private:
-    std::map<int, SPConnector> m_manager;
+    std::map<int, SPConnector> m_all_connector;
+    std::mutex m_mutex; // mutex for 'm_all_connector'
     int m_epoll_fd;
     bool m_run_flag;
     const int EPOLL_MAX_FD = 500;

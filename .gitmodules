@@ -7,3 +7,6 @@
 [submodule "extern/googletest"]
 	path = extern/googletest
 	url = https://github.com/google/googletest.git
+[submodule "extern/ThreadPool"]
+	path = extern/ThreadPool
+	url = https://github.com/progschj/ThreadPool.git

@@ -22,6 +22,8 @@ link_directories(${PROTOBUF_PATH}/lib)
 link_libraries(protobuf)
 # protocol
 include_directories(${CHAT_ROOT}/src/common/protocol/protocol)
+# threadpool
+include_directories(${CHAT_ROOT}/extern/ThreadPool)
 
 
 ## common

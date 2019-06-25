@@ -29,7 +29,7 @@ void ConnectManager::init_wakeup_pipe() {
     pipe(m_pipefds);
     int read_pipe = m_pipefds[0];
     int write_pipe = m_pipefds[1];
-    LOG_INFO("Init wakeup pipes. {}-{}", read_pipe, write_pipe);
+    LOG_INFO("Init wakeup pipes. fd:{},{}", read_pipe, write_pipe);
 
     // make read-end non-blocking
     int flags = fcntl(read_pipe, F_GETFL, 0);
@@ -85,7 +85,7 @@ void ConnectManager::read_function() {
 
             // wakeup by read_stop
             if (fd == m_pipefds[0]) {
-                LOG_INFO("Wakeup by pipe, {}", fd);
+                LOG_INFO("Wakeup by pipe, fd{}", fd);
                 char ch;
                 int result = 1;
                 while (result > 0) {

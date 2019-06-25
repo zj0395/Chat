@@ -27,7 +27,7 @@ void M_Person::send(SPConnector conn) const {
     while (size > 0) {
         int len = size < MAX_LEN ? size : MAX_LEN;
         int ret = person.SerializeToArray(data, len);
-        LOG_INFO("Serialize to fd {}, {}, {}", conn->get_fd(), ret, len);
+        LOG_INFO("Serialize to fd:{}, ret:{}, len:{}", conn->get_fd(), ret, len);
         if ( ret ) {
             write(conn->get_fd(), data, len);
             usleep(len * 5); // 200KB = 1s, 1KB = 5ms, 1B = 5us

@@ -6,7 +6,6 @@
 #include "message/m_person.h"
 #include "connect_manager.h"
 #include "logs.h"
-#include "test.pb.h"
 
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <unistd.h>

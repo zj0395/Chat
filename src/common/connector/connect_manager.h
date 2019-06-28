@@ -8,7 +8,6 @@
 
 #include "connector.h"
 #include "ThreadPool/ThreadPool.h"
-#include <sys/epoll.h>
 #include <string>
 #include <map>
 #include <memory>

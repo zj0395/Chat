@@ -4,7 +4,7 @@
 
 #include "logs.h"
 #include "server.h"
-#include "heads.h"
+#include "type_heads.h"
 #include <sys/socket.h>
 #include <unistd.h>
 #include <netdb.h>

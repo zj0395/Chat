@@ -1,11 +1,10 @@
+
 #include "client.h"
-
-#include <fstream>
-
 #include "logs.h"
 #include "message/m_person.h"
 
 #include <signal.h>
+#include <fstream>
 
 #define SERVER_NAME "127.0.0.1"
 #define SERVER_PORT 11111

@@ -4,7 +4,7 @@
 
 #include "client.h"
 #include "logs.h"
-#include "heads.h"
+#include "type_heads.h"
 
 #include <sys/socket.h>
 #include <netinet/in.h>

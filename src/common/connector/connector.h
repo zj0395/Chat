@@ -5,7 +5,9 @@
 #ifndef CHAT_CONNECTOR_H
 #define CHAT_CONNECTOR_H
 
+#include "message/package.h"
 #include "ThreadPool/ThreadPool.h"
+
 #include <sys/epoll.h>
 #include <string>
 #include <map>
@@ -23,12 +25,18 @@ public:
     Connector(int fd, const std::string& desc, ConnectManager& manager) : m_fd(fd), m_desc(desc), m_manager(manager) {}
     ~Connector();
     int get_fd() { return m_fd; }
-    void fd_read();
     const std::string get_desc() { return m_desc; }
+    void fd_read();
+    void fd_send(SPPackage message);
+
 private:
     int m_fd;
     std::string m_desc; // description
     ConnectManager& m_manager;
+
+private:
+    void read_body(unsigned int bodyLen);
+    unsigned int read_hdr(char* buf);
 };
 
 } //namespace zj

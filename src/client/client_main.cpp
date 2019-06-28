@@ -23,8 +23,10 @@ int main() {
 
     zj::M_Person person(4, "张建", "1043326391@qq.com" );
     person.addPhone(zj::Phone::MOBILE, "18811307371");
-    person.addPhone(zj::Phone::HOME, "011-1111111");
-    person.send(client.get_first());
+    for(int i=1; i<150; ++i) {
+        person.addPhone(zj::Phone::HOME, fmt::format("011-{}", i));
+    }
+    client.get_first()->fd_send(person.serialize());
 
     return 0;
 }

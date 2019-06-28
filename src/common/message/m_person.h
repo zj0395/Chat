@@ -12,7 +12,7 @@ namespace zj {
 
 struct Phone {
     enum Type {
-        MOBILE,
+        MOBILE = 0, // should same with the defines in .proto file
         HOME,
         WORK
     };
@@ -21,13 +21,16 @@ struct Phone {
     std::string m_number;
 };
 
-class M_Person : Message{
+class M_Person : public Message{
 public:
+    M_Person() = default;
     M_Person(int id, std::string name, std::string email) : m_id(id), m_name(name), m_email(email) {}
     void addPhone(Phone::Type type, std::string number) {
         m_phones.emplace_back(type, number);
     }
-    void send(SPConnector conn) const override;
+    SPPackage serialize() override;
+    bool parse(SPPackage mes) override;
+    void log() override;
 
 private:
     int m_id;

@@ -70,8 +70,11 @@ int ConnectManager::add(int fd, const std::string &desc) {
 
 // can be called from other thread
 void ConnectManager::remove(int fd) {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    m_all_connector.erase(fd);
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        m_all_connector.erase(fd);
+    }
+    LOG_INFO("Delete fd:{} from manager.", fd);
 }
 
 void ConnectManager::read_function() {

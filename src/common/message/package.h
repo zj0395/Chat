@@ -16,14 +16,15 @@ typedef std::shared_ptr<Package> SPPackage;
 
 struct Package {
 public:
-    Package(int length) : mes(make_char_array(length)), len(length)  {}
-
     SPChar mes;
-    int len;
+    int len; // length of message
 
-    static SPPackage make(int length) {
-        return SPPackage(new Package(length));
+    static SPPackage make(int len) {
+        return SPPackage(new Package(len));
     }
+
+private:
+    Package(int length) : mes(make_char_array(length)), len(length)  {}
 };
 
 

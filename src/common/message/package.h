@@ -2,8 +2,8 @@
 // Created by zj on 6/28/19.
 //
 
-#ifndef CHAT_PACKAGE_H
-#define CHAT_PACKAGE_H
+#ifndef RPC_PACKAGE_H
+#define RPC_PACKAGE_H
 
 #include "shared_array.h"
 
@@ -29,4 +29,4 @@ public:
 
 } // namespace zj
 
-#endif //CHAT_PACKAGE_H
+#endif //RPC_PACKAGE_H

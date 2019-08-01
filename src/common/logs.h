@@ -2,8 +2,8 @@
 // Created by zj on 12/26/18.
 //
 
-#ifndef CHAT_LOGS_H
-#define CHAT_LOGS_H
+#ifndef RPC_LOGS_H
+#define RPC_LOGS_H
 
 // SPDLOG_LEVEL_TRACE,
 // SPDLOG_LEVEL_DEBUG,

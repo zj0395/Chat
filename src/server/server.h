@@ -2,8 +2,8 @@
 // Created by zj on 12/2/18.
 //
 
-#ifndef CHAT_SERVER_H
-#define CHAT_SERVER_H
+#ifndef RPC_SERVER_H
+#define RPC_SERVER_H
 
 #include "singleton.h"
 #include "connect_manager.h"
@@ -35,4 +35,4 @@ private:
 };
 } //namespace zj
 
-#endif //CHAT_SERVER_H
+#endif //RPC_SERVER_H

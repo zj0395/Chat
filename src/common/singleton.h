@@ -4,8 +4,8 @@
 // use get_instance() function to control the order of instance initialize.
 //
 
-#ifndef CHAT_SINGLETON_H
-#define CHAT_SINGLETON_H
+#ifndef RPC_SINGLETON_H
+#define RPC_SINGLETON_H
 
 namespace zj {
 template<typename T>
@@ -28,4 +28,4 @@ protected:
 } //namespace zj
 
 
-#endif //CHAT_SINGLETON_H
+#endif //RPC_SINGLETON_H

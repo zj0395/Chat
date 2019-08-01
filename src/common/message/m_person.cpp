@@ -11,14 +11,14 @@
 namespace zj {
 
 SPPackage M_Person::serialize() {
-    chat::Person person;
+    rpc::Person person;
     person.set_id(m_id);
     person.set_name(m_name);
     person.set_email(m_email);
     for(const Phone& one_phone: m_phones ) {
-        chat::Person_PhoneNumber* n= person.add_phones();
+        rpc::Person_PhoneNumber* n= person.add_phones();
         n->set_number(one_phone.m_number);
-        n->set_type(chat::Person_PhoneType(one_phone.m_type));
+        n->set_type(rpc::Person_PhoneType(one_phone.m_type));
     }
     int size = person.ByteSize();
     LOG_INFO("Message size:{}", size);
@@ -41,7 +41,7 @@ SPPackage M_Person::serialize() {
 }
 
 bool M_Person::parse(SPPackage message) {
-    chat::Person person;
+    rpc::Person person;
 
     google::protobuf::io::ArrayInputStream ais(message->mes.get(), message->len);
     google::protobuf::io::CodedInputStream coded_input(&ais);

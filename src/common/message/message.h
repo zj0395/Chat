@@ -2,8 +2,8 @@
 // Created by zj on 6/23/19.
 //
 
-#ifndef CHAT_MESSAGE_H
-#define CHAT_MESSAGE_H
+#ifndef RPC_MESSAGE_H
+#define RPC_MESSAGE_H
 
 #include "package.h"
 #include <string>
@@ -30,4 +30,4 @@ public:
 
 
 
-#endif //CHAT_MESSAGE_H
+#endif //RPC_MESSAGE_H

@@ -2,8 +2,8 @@
 // Created by zj on 12/2/18.
 //
 
-#ifndef CHAT_MUTEX_H
-#define CHAT_MUTEX_H
+#ifndef RPC_MUTEX_H
+#define RPC_MUTEX_H
 
 #include <pthread.h>
 
@@ -19,4 +19,4 @@ private:
 };
 }
 
-#endif //CHAT_MUTEX_H
+#endif //RPC_MUTEX_H

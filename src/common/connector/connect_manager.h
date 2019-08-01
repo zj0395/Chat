@@ -2,8 +2,8 @@
 // Created by zj on 6/24/19.
 //
 
-#ifndef CHAT_CONNECT_MANAGER_H
-#define CHAT_CONNECT_MANAGER_H
+#ifndef RPC_CONNECT_MANAGER_H
+#define RPC_CONNECT_MANAGER_H
 
 
 #include "connector.h"
@@ -48,4 +48,4 @@ private:
 } //namespace zj
 
 
-#endif //CHAT_CONNECT_MANAGER_H
+#endif //RPC_CONNECT_MANAGER_H

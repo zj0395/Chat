@@ -2,8 +2,8 @@
 // Created by zj on 6/23/19.
 //
 
-#ifndef CHAT_M_PERSON_H
-#define CHAT_M_PERSON_H
+#ifndef RPC_M_PERSON_H
+#define RPC_M_PERSON_H
 
 #include "message.h"
 #include <vector>
@@ -41,4 +41,4 @@ private:
 
 } //namespace zj
 
-#endif //CHAT_M_PERSON_H
+#endif //RPC_M_PERSON_H

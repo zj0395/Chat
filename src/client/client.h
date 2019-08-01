@@ -2,8 +2,8 @@
 // Created by zj on 12/2/18.
 //
 
-#ifndef CHAT_CLIENT_H
-#define CHAT_CLIENT_H
+#ifndef RPC_CLIENT_H
+#define RPC_CLIENT_H
 
 #include "singleton.h"
 #include "connect_manager.h"
@@ -27,4 +27,4 @@ public:
 };
 }
 
-#endif //CHAT_CLIENT_H
+#endif //RPC_CLIENT_H

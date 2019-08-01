@@ -2,8 +2,8 @@
 // Created by zj on 6/23/19.
 //
 
-#ifndef CHAT_CHAR_H
-#define CHAT_CHAR_H
+#ifndef RPC_CHAR_H
+#define RPC_CHAR_H
 
 #include <memory>
 
@@ -18,4 +18,4 @@ inline SPChar make_char_array(size_t size) {
     return make_shared_array<char>(size);
 }
 
-#endif //CHAT_CHAR_H
+#endif //RPC_CHAR_H

@@ -2,8 +2,8 @@
 // Created by zj on 3/13/19.
 //
 
-#ifndef CHAT_CONNECTOR_H
-#define CHAT_CONNECTOR_H
+#ifndef RPC_CONNECTOR_H
+#define RPC_CONNECTOR_H
 
 #include "message/package.h"
 #include "ThreadPool/ThreadPool.h"
@@ -41,4 +41,4 @@ private:
 
 } //namespace zj
 
-#endif //CHAT_CONNECTOR_H
+#endif //RPC_CONNECTOR_H

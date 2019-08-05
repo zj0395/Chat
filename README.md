@@ -1,5 +1,5 @@
 # 命令行聊天软件
-[![Build Status](https://travis-ci.com/zj0395/Chat.svg?branch=master)](https://travis-ci.com/zj0395/Chat)  
+[![Build Status](https://travis-ci.com/zj0395/rpc.svg?branch=master)](https://travis-ci.com/zj0395/rpc)  
 **未完成**  
 ## 代码结构
 - src:  

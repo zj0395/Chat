@@ -8,6 +8,10 @@
 #include "message.h"
 #include <vector>
 
+namespace rpc {
+    class Person;
+} //namespace rpc
+
 namespace zj {
 
 struct Phone {
@@ -23,6 +27,7 @@ struct Phone {
 
 class M_Person : public Message{
 public:
+    typedef rpc::Person Protobuf_Obj;
     M_Person() = default;
     M_Person(int id, std::string name, std::string email) : m_id(id), m_name(name), m_email(email) {}
     void addPhone(Phone::Type type, std::string number) {
@@ -30,7 +35,10 @@ public:
     }
     SPPackage serialize() override;
     bool parse(SPPackage mes) override;
+    bool exec() override;
     void log() override;
+
+    static const unsigned int s_type = T_Person;
 
 private:
     int m_id;

@@ -30,6 +30,7 @@ include_directories(${CHAT_ROOT}/extern/)
 include_directories(common)
 include_directories(common/connector)
 include_directories(common/protocol)
+include_directories(common/message)
 ADD_SUBDIRECTORY(common)
 
 

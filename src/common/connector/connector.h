@@ -35,8 +35,8 @@ private:
     ConnectManager& m_manager;
 
 private:
-    void read_body(unsigned int bodyLen);
-    unsigned int read_hdr(char* buf);
+    void read_body(unsigned int bodyLen, unsigned int type);
+    bool read_hdr(char* buf, unsigned int& size, unsigned int & type);
 };
 
 } //namespace zj

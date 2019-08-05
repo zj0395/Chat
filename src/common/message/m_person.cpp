@@ -19,7 +19,7 @@ SPPackage M_Person::serialize() {
         n->set_type(rpc::Person_PhoneType(one_phone.m_type));
     }
 
-    return Message::serialize_help(person);
+    return Message::serialize_help(this, person);
 }
 
 bool M_Person::parse(SPPackage message) {
@@ -50,6 +50,10 @@ void M_Person::log() {
     for (Phone& p : m_phones) {
         LOG_DEBUG("Type:{},Number:{}", p.m_type, p.m_number);
     }
+}
+
+bool M_Person::exec() {
+    return false;
 }
 
 } //namespace zj

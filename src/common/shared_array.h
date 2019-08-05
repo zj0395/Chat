@@ -10,7 +10,7 @@
 template <typename T>
 std::shared_ptr<T> make_shared_array(size_t size) {
     //default_delete是STL中的默认删除器
-    return std::shared_ptr<T>(new T[size], std::default_delete<T[]>());
+    return std::shared_ptr<T>(new T[size]{0}, std::default_delete<T[]>());
 }
 
 typedef std::shared_ptr<char> SPChar;

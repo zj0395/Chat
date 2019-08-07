@@ -65,7 +65,7 @@ public:
             LOG_ERROR("Serialize fail. Need more info to trace this.");
             return nullptr;
         }
-        //message->len = coded_output.ByteCount();
+        message->len = coded_output.ByteCount();
         return message;
     }
 

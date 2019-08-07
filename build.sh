@@ -99,9 +99,10 @@ function build_chat() {
     local SRC_DIR=$g_CHAT_ROOT/src
     local OUT_DIR=$g_OUT_DIR
     local myDefines="-DCMAKE_BUILD_TYPE=$g_BUILD_TYPE -DEXECUTABLE_OUTPUT_PATH=$g_BIN_DIR -DLIBRARY_OUTPUT_PATH=$g_LIB_DIR \
-        -DPROTOBUF_PATH=$g_PROTOBUF_OUT -DCHAT_ROOT=$g_CHAT_ROOT"
+        -DPROTOBUF_PATH=$g_PROTOBUF_OUT -DCHAT_ROOT=$g_CHAT_ROOT -DGTEST_DIR=$g_GTEST_OUT"
     local_mkdir $OUT_DIR
     cd "$OUT_DIR" && cmake "$SRC_DIR" $myDefines && make && cd -
+    cd $g_BIN_DIR && ./"$TEST_EXE" && cd -
 
     success=$?
     if [ $success -eq 0 ];then
@@ -133,7 +134,7 @@ function build_test() {
 }
 
 function build_all() {
-    externs="fmt,spdlog,chat,test"
+    externs="fmt,spdlog,chat"
     OLD_IFS="$IFS"
     IFS=","
     externs=($externs)

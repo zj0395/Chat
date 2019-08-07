@@ -31,7 +31,7 @@ void Connector::fd_read() {
     }
 
     unsigned int bodyLen, type;
-    read_hdr(buffer, bodyLen, type);
+    Message::read_hdr(buffer, bodyLen, type);
     LOG_INFO("Read hdr size:{}, bodyLen:{}", byteCount, bodyLen);
     read_body(bodyLen, type);
 }
@@ -42,14 +42,6 @@ void Connector::fd_send(SPPackage message) {
         LOG_ERROR("Send error, fd:{}, errno:{}", m_fd, errno);
     }
     usleep(1);
-}
-
-bool Connector::read_hdr(char* buf, unsigned int & size, unsigned int & type) {
-    google::protobuf::io::ArrayInputStream ais(buf, 8);
-    google::protobuf::io::CodedInputStream coded_input(&ais);
-    coded_input.ReadVarint32(&size);//Decode the HDR and get the size
-    coded_input.ReadVarint32(&type);//Decode the HDR and get the size
-    return true;
 }
 
 void Connector::read_body(unsigned int bodyLen, unsigned int type) {

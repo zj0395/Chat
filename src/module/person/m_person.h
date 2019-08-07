@@ -38,7 +38,7 @@ public:
     bool exec() override;
     void log() override;
 
-    static const unsigned int s_type = T_Person;
+    static const unsigned int s_type;
 
 private:
     int m_id;

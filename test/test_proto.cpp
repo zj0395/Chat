@@ -2,41 +2,42 @@
 // Created by zj on 2/24/19.
 //
 
-#include <fstream>
-#include "test.pb.h"
 #include "gtest/gtest.h"
+#include "package.h"
+#include "person/m_person.h"
+#include <fstream>
 
 using namespace std;
 
-void write() {
-    rpc::Person person_test;
-    person_test.set_name("张建");
-    person_test.set_id(4);
-    person_test.set_email("1043326391@qq.com");
-    {
-        rpc::Person_PhoneNumber* n1= person_test.add_phones();
-        n1->set_number("18811307371");
-        n1->set_type(rpc::Person_PhoneType(0));
-        rpc::Person_PhoneNumber* n2= person_test.add_phones();
-        n2->set_number("0395-444444");
-        n2->set_type(rpc::Person_PhoneType(1));
-    }
-    ofstream output("heartbeat.db",ios::out|ios::trunc|ios::binary);
-    bool ret = person_test.SerializeToOstream(&output);
+bool write() {
+    zj::M_Person person_test(4, "张建", "1043326391@qq.com");
+    person_test.addPhone(zj::Phone::MOBILE, "18811307371");
+    person_test.addPhone(zj::Phone::HOME, "0395-444444");
+
+    zj::SPPackage mes = person_test.serialize();
+    if (mes == nullptr)
+        return false;
+    ofstream output("heartbeat.db", ios::out|ios::trunc|ios::binary);
+    output.write(mes->mes.get(), mes->len);
+    output.close();
+    return true;
 }
 
 TEST(protocol, test) {
-    write();
-    rpc::Person person;
-    ifstream output("heartbeat.db", ios::in|ios::binary);
-    bool ret = person.ParseFromIstream(&output);
+    ASSERT_TRUE(write());
+    //rpc::Person person;
+    ifstream input("heartbeat.db", ios::in|ios::binary);
+
+    input.seekg (0, input.end);
+    int length = input.tellg();
+    input.seekg (0, input.beg);
+
+    zj::SPPackage mes = zj::Package::make(length);
+    input.read(mes->mes.get(), mes->len);
+
+    unsigned int bodyLen, type;
+    zj::Message::read_hdr(mes->mes.get(), bodyLen, type);
+
+    bool ret = zj::Message::begin_parse(mes, type);
     ASSERT_TRUE(ret);
-    ASSERT_EQ(person.name(), "张建");
-    ASSERT_EQ(person.id(), 4);
-    ASSERT_EQ(person.email(), "1043326391@qq.com");
-    ASSERT_EQ(person.phones_size(), 2);
-    ASSERT_EQ(person.phones(0).number(), "18811307371");
-    ASSERT_EQ(person.phones(0).type(), rpc::Person_PhoneType(0));
-    ASSERT_EQ(person.phones(1).number(), "0395-444444");
-    ASSERT_EQ(person.phones(1).type(), rpc::Person_PhoneType(1));
 }

@@ -8,6 +8,8 @@
 
 namespace zj {
 
+const unsigned int M_Person::s_type = T_Person;
+
 SPPackage M_Person::serialize() {
     rpc::Person person;
     person.set_id(m_id);

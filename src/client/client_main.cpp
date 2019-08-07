@@ -1,7 +1,7 @@
 
 #include "client.h"
 #include "logs.h"
-#include "message/m_person.h"
+#include "person/m_person.h"
 
 #include <signal.h>
 #include <fstream>

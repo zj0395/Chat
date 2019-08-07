@@ -31,6 +31,7 @@ include_directories(common)
 include_directories(common/connector)
 include_directories(common/protocol)
 include_directories(common/message)
+include_directories(module)
 ADD_SUBDIRECTORY(common)
 
 
@@ -41,3 +42,6 @@ link_libraries(pthread)
 # src
 ADD_SUBDIRECTORY(client)
 ADD_SUBDIRECTORY(server)
+
+# test
+ADD_SUBDIRECTORY(${CHAT_ROOT}/test test.out)
